@@ -17,7 +17,7 @@ with open(getScriptPath()+'/../../config.json') as json_data_file:
 
 
 if __name__ == "__main__":
-    hour = datetime.datetime.now().strftime('%H')
+    hour = datetime.datetime.now().strftime('%H').strip("0")
 
     args = ["mpg321",
             "-q",
