@@ -3,9 +3,9 @@
 import datetime
 import subprocess
 
-from tools.config import getConfig
+from core.tools.config import getConfig
 conf = getConfig()
-print(conf)
+#print(conf)
 
 
 if __name__ == "__main__":

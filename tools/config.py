@@ -12,11 +12,11 @@ def getConfig(configfile=None):
 
 
 def loadconf(configfile=None):
-    print ' enter configuration file :',configfile
+    #print ' enter configuration file :',configfile
     if not configfile:
         configfile = default_configfile
 
-    print ' out configuration file :',configfile
+    #print ' out configuration file :',configfile
     global config
     try :
         with open(configfile) as json_data_file:
