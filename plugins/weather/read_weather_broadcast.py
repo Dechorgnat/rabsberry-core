@@ -5,6 +5,10 @@
 import urllib
 import requests
 from core.functions.play_tts import play_tts
+from core.functions.play_audio import play_audio_files
+from core.tools.config import getConfig
+
+conf = getConfig()
 
 # Nous construisons ensuite la requête pour obtenir le temps actuel.
 openWeatherMapQuery = {
@@ -30,6 +34,8 @@ text = u"Bulletin météo : " + resp['weather'][0]['description']
 # Ensuite, nous ajoutons la température pour conclure la phrase. Notez, que nous l'arrondissons.
 text = text + u". Il fait actuellement "+ str(resp['main']['temp']).replace('.',',') +u" degrés."
 
-print text
+#print text
 
+play_audio_files([ conf['CORE_ROOT'] + "/resources/mp3/weather/fr/signature.mp3"])
 play_tts(text.encode('utf8'), 'fr')
+play_audio_files([ conf['CORE_ROOT'] + "/resources/mp3/weather/fr/signature.mp3"])
