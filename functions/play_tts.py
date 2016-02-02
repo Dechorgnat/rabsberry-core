@@ -10,7 +10,9 @@ import subprocess
 def play_tts(message, lang):
     print lang, "-", message
     # "http://translate.google.com/translate_tts?tl=lang&client=tw-ob&q=message"
-    uri = "http://translate.google.com/translate_tts?tl={}&client=tw-ob&q={}".format(lang, urllib.urlencode(message))
+    params = urllib.urlencode({'tl':lang, 'client':'tw-ob','q':message})
+    uri = "http://translate.google.com/translate_tts?"+params
+    print uri
     args = ["mpg321",
             "-q",
             uri]
@@ -18,7 +20,6 @@ def play_tts(message, lang):
     output, error = p.communicate()
     if p.returncode != 0:
         raise subprocess.CalledProcessError(p.returncode, output, error)
-
     return None
 
 if __name__ == "__main__":
