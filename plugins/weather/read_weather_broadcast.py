@@ -32,7 +32,7 @@ print resp
 text = u"Bulletin météo : " + resp['weather'][0]['description']
 
 # Ensuite, nous ajoutons la température pour conclure la phrase. Notez, que nous l'arrondissons.
-text = text + u". A Rennes,il fait actuellement "+ str(resp['main']['temp']).replace('.',',') +u" degrés."
+text = text + u". A Rennes, il fait actuellement "+ str(resp['main']['temp']).replace('.',',') +u" degrés."
 
 #print text
 
