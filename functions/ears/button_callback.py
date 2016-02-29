@@ -14,4 +14,3 @@ GPIO.add_event_detect(button_pin, GPIO.FALLING, callback=button_pressed)
 
 while True:
     time.sleep(5)
-

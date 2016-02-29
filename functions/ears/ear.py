@@ -5,13 +5,21 @@ class Ear:
     forward=0
     backward=1
 
+
     def __init__(self, enable, in1, in2):
         self.enable = enable
         self.in1 = in1
         self.in2 = in2
+        self.running = False
+        self.current_direction = self.forward
+        #
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
+        #
+        GPIO.output(self.in1,GPIO.LOW)
+        GPIO.output(self.in2,GPIO.LOW)
+        GPIO.output(self.enable,GPIO.LOW)
 
 
     def start (self, direction):
@@ -22,10 +30,13 @@ class Ear:
             GPIO.output(self.in2,GPIO.HIGH)
             GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.enable,GPIO.HIGH)
+        self.running = True
+        self.current_direction = direction
 
 
     def stop(self):
         GPIO.output(self.enable,GPIO.LOW)
+        self.running = False
 
 
 if __name__ == "__main__":
