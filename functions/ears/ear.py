@@ -6,8 +6,9 @@ class Ear:
     backward=1
 
 
-    def __init__(self, enable, in1, in2):
+    def __init__(self, enable, in1, in2, control):
         self.enable = enable
+        self.control = control
         self.in1 = in1
         self.in2 = in2
         self.running = False
@@ -16,10 +17,12 @@ class Ear:
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
+        GPIO.setup(self.control, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         #
         GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.in2,GPIO.LOW)
         GPIO.output(self.enable,GPIO.LOW)
+
 
 
     def start (self, direction):
@@ -39,36 +42,44 @@ class Ear:
         self.running = False
 
 
+    def cleanup(self):
+        GPIO.cleanup(self.in1, self.in2, self.enable, self.control)
+
+
 if __name__ == "__main__":
     GPIO.setmode(GPIO.BOARD)
+    GPIO.setwarnings(False)
 
-    left_ear = Ear(23, 19, 21)
-    right_ear = Ear(12, 16, 18)
+    left_ear = Ear(23, 19, 21, 13)
+    right_ear = Ear(12, 16, 18, 11)
 
-    print "Going forwards"
+    print "Left going forwards 1.5s"
     left_ear.start(Ear.forward)
     sleep(1.5)
     left_ear.stop()
 
+    print "Right going forwards 1.5s"
     right_ear.start(Ear.forward)
     sleep(1.5)
     right_ear.stop()
 
+    print "Left going forwards 1.5s"
     left_ear.start(Ear.forward)
     sleep(1.5)
     left_ear.stop()
 
+    print "Right going forwards 1.5s"
     right_ear.start(Ear.forward)
     sleep(1.5)
     right_ear.stop()
 
-    print "Going backwards"
+    print "Left and right going backwards 3s"
     left_ear.start(Ear.backward)
     right_ear.start(Ear.backward)
     sleep(3)
 
-    print "Now stop"
     left_ear.stop()
     right_ear.stop()
 
-    GPIO.cleanup()
+    left_ear.cleanup()
+    right_ear.cleanup()
