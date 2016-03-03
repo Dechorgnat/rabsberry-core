@@ -1,32 +1,32 @@
+#!/usr/bin/python
+
 import RPi.GPIO as GPIO
 from time import sleep
 
 class Ear:
-    forward=0
-    backward=1
+    FORWARD=0
+    BACKWARD=1
 
-
-    def __init__(self, enable, in1, in2, control):
+    def __init__(self, enable, in1, in2, indexer):
         self.enable = enable
-        self.control = control
+        self.indexer = indexer
         self.in1 = in1
         self.in2 = in2
         self.running = False
-        self.current_direction = self.forward
+        self.current_direction = Ear.FORWARD
+        self.position=-1
         #
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
-        GPIO.setup(self.control, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.indexer, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         #
         GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.in2,GPIO.LOW)
         GPIO.output(self.enable,GPIO.LOW)
 
-
-
-    def start (self, direction):
-        if direction == Ear.forward:
+    def start(self, direction):
+        if direction == Ear.FORWARD:
             GPIO.output(self.in1,GPIO.HIGH)
             GPIO.output(self.in2,GPIO.LOW)
         else:
@@ -36,14 +36,27 @@ class Ear:
         self.running = True
         self.current_direction = direction
 
-
     def stop(self):
         GPIO.output(self.enable,GPIO.LOW)
         self.running = False
 
+    def goto(self, positon, direction):
+        # TODO
+        print ("going ", direction, " to position ",positon)
+
+    def get_position(self):
+        return self.positon
 
     def cleanup(self):
+<<<<<<< HEAD
         GPIO.cleanup([self.in1, self.in2, self.enable, self.control])
+=======
+        GPIO.cleanup(self.in1, self.in2, self.enable, self.indexer)
+
+    def calibrate(self):
+        # TODO
+        print "starting calibration"
+>>>>>>> 9d2eab17deda4658ee1803b41551504f1bd5928e
 
 
 if __name__ == "__main__":
@@ -53,33 +66,59 @@ if __name__ == "__main__":
     left_ear = Ear(23, 19, 21, 13)
     right_ear = Ear(12, 16, 18, 11)
 
-    print "Left going forwards 1.5s"
-    left_ear.start(Ear.forward)
+    left_ear.calibrate()
+    right_ear.calibrate()
+
+    print "Left  position : ", left_ear.get_position()
+    print "Right position : ", right_ear.get_position()
+
+    print "Left  going forward 1.5s"
+    left_ear.start(Ear.FORWARD)
     sleep(1.5)
     left_ear.stop()
 
-    print "Right going forwards 1.5s"
-    right_ear.start(Ear.forward)
+    print "Right going forward 1.5s"
+    right_ear.start(Ear.FORWARD)
     sleep(1.5)
     right_ear.stop()
 
-    print "Left going forwards 1.5s"
-    left_ear.start(Ear.forward)
-    sleep(1.5)
+    print "Left  going forward 2s"
+    left_ear.start(Ear.FORWARD)
+    sleep(2)
     left_ear.stop()
 
-    print "Right going forwards 1.5s"
-    right_ear.start(Ear.forward)
-    sleep(1.5)
+    print "Right going forward 2s"
+    right_ear.start(Ear.FORWARD)
+    sleep(2)
     right_ear.stop()
 
-    print "Left and right going backwards 3s"
-    left_ear.start(Ear.backward)
-    right_ear.start(Ear.backward)
-    sleep(3)
+    print "Left  position : ", left_ear.get_position()
+    print "Right position : ", right_ear.get_position()
 
+    sleep(5)
+
+    print "Left and right going backward 3.5s"
+    left_ear.start(Ear.BACKWARD)
+    right_ear.start(Ear.BACKWARD)
+    sleep(3.5)
     left_ear.stop()
     right_ear.stop()
+
+    print "Left  position : ", left_ear.get_position()
+    print "Right position : ", right_ear.get_position()
+
+    print "Right going forward to position 0"
+    right_ear.goto(0, Ear.FORWARD)
+    print "Left  going forward to position 0"
+    left_ear.goto(0, Ear.FORWARD)
+    sleep(5)
+
+    print "Right going forward  to position 10"
+    right_ear.goto(10, Ear.FORWARD)
+    print "Left  going backward to position 10"
+    left_ear.goto(10, Ear.BACKWARD)
+    sleep(5)
+
 
     left_ear.cleanup()
     right_ear.cleanup()
