@@ -48,15 +48,11 @@ class Ear:
         return self.positon
 
     def cleanup(self):
-<<<<<<< HEAD
-        GPIO.cleanup([self.in1, self.in2, self.enable, self.control])
-=======
         GPIO.cleanup(self.in1, self.in2, self.enable, self.indexer)
 
     def calibrate(self):
         # TODO
         print "starting calibration"
->>>>>>> 9d2eab17deda4658ee1803b41551504f1bd5928e
 
 
 if __name__ == "__main__":
