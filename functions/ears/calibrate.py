@@ -37,7 +37,7 @@ GPIO.add_event_detect(control_pin, GPIO.FALLING, callback=front_detected)
 
 last_tick = current_milli_time()
 right_ear = Ear(12, 16, 18, control_pin)
-right_ear.start(Ear.forward)
+right_ear.start(Ear.FORWARD)
 time.sleep(6)
 right_ear.stop()
 right_ear.cleanup()
