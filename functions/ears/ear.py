@@ -43,7 +43,7 @@ class Ear:
 
 
     def cleanup(self):
-        GPIO.cleanup(self.in1, self.in2, self.enable, self.control)
+        GPIO.cleanup([self.in1, self.in2, self.enable, self.control])
 
 
 if __name__ == "__main__":
