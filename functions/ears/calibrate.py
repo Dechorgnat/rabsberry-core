@@ -46,7 +46,6 @@ else:
     print('Input was LOW')
 
 right_ear = Ear(12, 16, 18, control_pin)
-<<<<<<< HEAD
 #left_ear = Ear(23, 19, 21, control_pin)
 
 #right_ear.start(Ear.forward)
@@ -56,11 +55,13 @@ while True:
     else:
         print('Input was LOW')
     time.sleep(1)
-=======
+
+'''
 right_ear.start(Ear.FORWARD)
 time.sleep(6)
->>>>>>> 9d2eab17deda4658ee1803b41551504f1bd5928e
 right_ear.stop()
+'''
+
 right_ear.cleanup()
 
 GPIO.cleanup(control_pin)
