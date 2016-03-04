@@ -14,18 +14,14 @@ class Top_button:
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.top_button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-
     def start_listening(self):
-        GPIO.add_event_detect(self.top_button_pin, GPIO.FALLING, callback=self.button_pressed,  bouncetime=20)
-
+        GPIO.add_event_detect(self.top_button_pin, GPIO.FALLING, callback=self.button_pressed,  bouncetime=800) 
 
     def stop_listening(self):
         GPIO.remove_event_detect(self.top_button_pin)
 
-
     def cleanup(self):
         GPIO.cleanup(self.top_button_pin)
-
 
     def button_pressed(self, channel):
         print "button pressed "
