@@ -8,17 +8,25 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 class Ear:
     FORWARD="forward"
     BACKWARD="backward"
+    running = False
+    current_direction = FORWARD
+    position = -1
+    goal = -1
+    calibrating = False
+    last_tick = 0
+    num = 0
+    found_missing = False
+    me = None
 
-    def __init__(self, enable, in1, in2, indexer, auto_calibration=False):
+    def __init__(self, enable, in1, in2, indexer):
         self.enable = enable
         self.indexer = indexer
         self.in1 = in1
         self.in2 = in2
-        self.running = False
-        self.current_direction = Ear.FORWARD
-        self.position = -1
-        self.goal = -1
-        #
+        self.me = self
+
+    #def initialize(self, auto_calibration=False):
+        print "initialization", self.indexer
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
@@ -29,8 +37,10 @@ class Ear:
         GPIO.output(self.enable,GPIO.LOW)
 
         GPIO.add_event_detect(self.indexer, GPIO.FALLING, callback=self.front_detected, bouncetime=30)
+        '''
         if auto_calibration:
             self.calibrate()
+        '''
 
     def start(self, direction=FORWARD):
         if direction == Ear.FORWARD:
@@ -55,6 +65,9 @@ class Ear:
     def get_position(self):
         return self.position
 
+    def set_position(self, position):
+        self.position = position
+
     def cleanup(self):
         GPIO.cleanup([self.in1, self.in2, self.enable, self.indexer])
 
@@ -67,13 +80,14 @@ class Ear:
         self.start()
         
     def front_detected(self, channel):
+        print "front detected ", self.me.calibrating, self.me.running, self.me.position
         if self.calibrating:
             delay = current_milli_time() - self.last_tick
-            last_tick = current_milli_time()
+            self.last_tick = current_milli_time()
             self.num = self.num+1
             if delay>800:
                 self.num = 0
-                found_missing = True
+                self.found_missing = True
                 print "missing tooth (", self.num, ") ", delay, "ms"
             else:
                 print "tooth (", self.num, ") ", delay, "ms"
@@ -108,10 +122,13 @@ if __name__ == "__main__":
     GPIO.setwarnings(False)
 
     left_ear = Ear(23, 19, 21, 13)
-    right_ear = Ear(12, 16, 18, 11, True)
+    right_ear = Ear(12, 16, 18, 11)
+#    right_ear.initialize(True)
+    right_ear.calibrate()
     # waiting for calibration
-    time.sleep(5)
+    time.sleep(10)
 
+    '''
     print "Left  position : ", left_ear.get_position()
     print "Right position : ", right_ear.get_position()
 
@@ -163,8 +180,8 @@ if __name__ == "__main__":
     time.sleep(5)
 
     print "Try moving right ear manually"
-    time.sleep(30)
-
+    time.sleep(5)
+    '''
     print "End of tests"
 
     left_ear.cleanup()
