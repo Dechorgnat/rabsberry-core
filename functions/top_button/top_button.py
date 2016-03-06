@@ -25,16 +25,18 @@ class Top_button:
 
     def button_pressed(self, channel):
         print "button pressed "
+        self.callback_short_pressed()
 
 
 def call_rabsberry_event_api(action):
-    url = "http://localhost:4321/api/event"
+    url = "http://localhost/api/event"
     payload = { 'actor_type':'TOP_BUTTON', 'actor_id':'TOP_BUTTON', 'action': action}
     requests.post(url, json=payload)
 
 
 def callback_short_pressed():
     print "callback_short_pressed"
+    call_rabsberry_event_api("SHORT_PRESSED")
 
 
 def callback_long_pressed():

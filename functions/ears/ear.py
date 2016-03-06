@@ -6,52 +6,41 @@ import time
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 class Ear:
-    FORWARD="forward"
-    BACKWARD="backward"
-    running = False
-    current_direction = FORWARD
-    position = -1
-    goal = -1
-    calibrating = False
-    last_tick = 0
-    num = 0
-    found_missing = False
-    me = None
+#    FORWARD="forward"
+#    BACKWARD="backward"
 
     def __init__(self, enable, in1, in2, indexer):
         self.enable = enable
         self.indexer = indexer
         self.in1 = in1
         self.in2 = in2
-        self.me = self
-
-    #def initialize(self, auto_calibration=False):
-        print "initialization", self.indexer
+        self.running = False
+        self.current_direction = "FORWARD"
+        self.position = -1
+        self.goal = -1
+        self.calibrating = False
+        self.last_tick = 0
+        self.num = 0
+        self.found_missing = False
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
         GPIO.setup(self.indexer, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        #
         GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.in2,GPIO.LOW)
         GPIO.output(self.enable,GPIO.LOW)
-
         GPIO.add_event_detect(self.indexer, GPIO.FALLING, callback=self.front_detected, bouncetime=30)
-        '''
-        if auto_calibration:
-            self.calibrate()
-        '''
 
-    def start(self, direction=FORWARD):
-        if direction == Ear.FORWARD:
+    def start(self, direction="FORWARD"):
+        self.running = True
+        self.current_direction = direction
+        if direction == "FORWARD":
             GPIO.output(self.in1,GPIO.HIGH)
             GPIO.output(self.in2,GPIO.LOW)
         else:
             GPIO.output(self.in2,GPIO.HIGH)
             GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.enable,GPIO.HIGH)
-        self.running = True
-        self.current_direction = direction
 
     def stop(self):
         GPIO.output(self.enable,GPIO.LOW)
@@ -80,7 +69,7 @@ class Ear:
         self.start()
         
     def front_detected(self, channel):
-        print "front detected ", self.me.calibrating, self.me.running, self.me.position
+        print "front detected ", self.calibrating, self.running, self.position
         if self.calibrating:
             delay = current_milli_time() - self.last_tick
             self.last_tick = current_milli_time()
@@ -99,7 +88,7 @@ class Ear:
         else:
             # not calibrating
             if self.running:
-                if self.current_direction == Ear.FORWARD:
+                if self.current_direction == "FORWARD":
                     self.position = self.position + 1
                     if self.position == 17:
                         self.position = 0
@@ -123,8 +112,8 @@ if __name__ == "__main__":
 
     left_ear = Ear(23, 19, 21, 13)
     right_ear = Ear(12, 16, 18, 11)
-#    right_ear.initialize(True)
     right_ear.calibrate()
+
     # waiting for calibration
     time.sleep(10)
 
