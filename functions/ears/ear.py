@@ -2,6 +2,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import requests
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
@@ -38,6 +39,7 @@ class Ear:
             self.last_tick = current_milli_time()
             self.num = self.num+1
             if delay>800:
+                self.goal = 16 - self.num
                 self.num = 0
                 self.found_missing = True
                 print "missing tooth (", self.num, ") ", delay, "ms"
@@ -45,9 +47,10 @@ class Ear:
                 print "tooth (", self.num, ") ", delay, "ms"
             if self.found_missing:
                 self.position = self.num
-            if self.found_missing and self.num == 3:
-                self.calibrating = False
+            if self.found_missing and self.num == self.goal:
                 self.stop()
+                self.goal = -1
+                self.calibrating = False
         else:
             # not calibrating
             if self.running:
