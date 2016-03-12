@@ -39,7 +39,7 @@ class Ear:
             self.last_tick = current_milli_time()
             self.num = self.num+1
             if delay>800:
-                self.goal = 16 - self.num
+                self.goal = 17 - self.num
                 self.num = 0
                 self.found_missing = True
                 print "missing tooth (", self.num, ") ", delay, "ms"
