@@ -12,7 +12,7 @@
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/home/pi/Rabsberry/core
-DAEMON=$DIR/functions/top_button.py
+DAEMON=$DIR/functions/top_button/top_button.py
 DAEMON_NAME=rabsberry_top_button
 
 # Add any command line options for your daemon here
