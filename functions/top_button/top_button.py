@@ -3,7 +3,9 @@
 import RPi.GPIO as GPIO
 import time
 import requests
-
+import signal
+import sys
+ 
 
 class Top_button:
 
@@ -27,6 +29,12 @@ class Top_button:
         print "button pressed "
         self.callback_short_pressed()
 
+def signal_term_handler(signal, frame):
+    print
+    print 'Terminating Top Button'
+    top_button.stop_listening()
+    top_button.cleanup()
+    sys.exit(0)
 
 def call_rabsberry_event_api(action):
     url = "http://localhost/api/event"
@@ -43,9 +51,10 @@ def callback_long_pressed():
     print "callback_long_pressed"
 
 
-if __name__ == "__main__":
-    top_button = Top_button(11, callback_short_pressed, callback_long_pressed)
-    top_button.start_listening()
-    time.sleep(30)
-    top_button.stop_listening()
-    top_button.cleanup()
+top_button = Top_button(11, callback_short_pressed, callback_long_pressed)
+top_button.start_listening()
+signal.signal(signal.SIGTERM, signal_term_handler)
+signal.signal(signal.SIGINT, signal_term_handler)
+while True:
+    time.sleep(1)
+
