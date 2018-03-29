@@ -23,6 +23,8 @@ class Ear:
         self.last_tick = 0
         self.num = 0
         self.found_missing = False
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setwarnings(False)
         GPIO.setup(self.in1,GPIO.OUT)
         GPIO.setup(self.in2,GPIO.OUT)
         GPIO.setup(self.enable,GPIO.OUT)
@@ -110,8 +112,6 @@ class Ear:
 
 
 if __name__ == "__main__":
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setwarnings(False)
 
     left_ear = Ear(23, 19, 21, 15)
     right_ear = Ear(12, 16, 18, 13)
