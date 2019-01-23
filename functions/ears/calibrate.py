@@ -54,7 +54,7 @@ if GPIO.input(control_pin):
 else:
     print('Input was LOW')
 
-right_ear = Ear(12, 16, 18, control_pin)
+right_ear = Ear(18, 16, 22, control_pin)
 #left_ear = Ear(23, 19, 21, control_pin)
 
 '''
