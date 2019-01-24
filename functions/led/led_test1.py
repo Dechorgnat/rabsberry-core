@@ -11,20 +11,7 @@ from collections import Iterable
 import signal
 import sys
 
-def signal_handler(sig, frame):
-    clearStrip(strip)
-    sys.exit(0)
-
-# LED strip configuration:
-LED_COUNT      = 6      # Number of LED pixels.
-LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
-LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
-LED_DMA        = 10       # DMA channel to use for generating signal (try 5)
-LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
-LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-
-
-#Color Contants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
+# Color Contants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
 ALICEBLUE = Color(240, 248, 255)
 ANTIQUEWHITE = Color(250, 235, 215)
 ANTIQUEWHITE1 = Color(255, 239, 219)
@@ -574,84 +561,99 @@ WHEAT3 = Color(205, 186, 150)
 WHEAT4 = Color(139, 126, 102)
 WHITE = Color(255, 255, 255)
 WHITESMOKE = Color(245, 245, 245)
-WHITESMOKE = Color(245, 245, 245)
 YELLOW1 = Color(255, 255, 0)
 YELLOW2 = Color(238, 238, 0)
 YELLOW3 = Color(205, 205, 0)
 YELLOW4 = Color(139, 139, 0)
 
+# LED strip configuration:
+LED_COUNT = 6  # Number of LED pixels.
+LED_PIN = 18  # GPIO pin connected to the pixels (must support PWM!).
+LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_DMA = 10  # DMA channel to use for generating signal (try 5)
+LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
+LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
+
+def signal_handler(sig, frame):
+    clearStrip(strip)
+    sys.exit(0)
+
 def occultationOneColor(t, on, off, offset, color):
-    period = on+off
-    phase  = (t+offset) % period
+    period = on + off
+    phase = (t + offset) % period
     if phase > on:
         return BLACK
     return color
 
+
 def waveOneColor(t, period, offset, r, g, b):
-    phase  = (t + offset) * math.pi * 2 / period
+    phase = (t + offset) * math.pi * 2 / period
     k = (math.sin(phase) + 1) / 2
-    return Color(int(k*r), int(k*g), int(k*b))
+    return Color(int(k * r), int(k * g), int(k * b))
+
 
 def waveTwoColor(t, period, offset, r1, g1, b1, r2, g2, b2, fading):
-    phase  = (t + offset) * math.pi * 2 / period
+    phase = (t + offset) * math.pi * 2 / period
     if fading:
         k = (math.sin(phase) + 1) / 2
         kk = 1 - k
-        return Color(int(k*r1)+int(kk*r2), int(k*g1)+int(kk*g2), int(k*b1)+int(kk*b2))
+        return Color(int(k * r1) + int(kk * r2), int(k * g1) + int(kk * g2), int(k * b1) + int(kk * b2))
     else:
         k = math.sin(phase)
-        if k>0: 
-            return Color(int(k*r1), int(k*g1), int(k*b1))
+        if k > 0:
+            return Color(int(k * r1), int(k * g1), int(k * b1))
         else:
-            return Color(int(-k*r2), int(-k*g2), int(-k*b2))
+            return Color(int(-k * r2), int(-k * g2), int(-k * b2))
+
 
 def fixedColor(t, color):
     return color
+
 
 def clearStrip(strip):
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, 0)
     strip.show()
- 
- 
+
+
 # Main program logic follows:
 if __name__ == '__main__':
-	# Create NeoPixel object with appropriate configuration.
-	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+    # Create NeoPixel object with appropriate configuration.
+    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+    # set signal handler to catch ctrl C
+    signal.signal(signal.SIGINT, signal_handler)
 
-        signal.signal(signal.SIGINT, signal_handler)
+    # Intialize the library (must be called once before other functions).
+    strip.begin()
+    clearStrip(strip)
+    fd = 1 / 5
+    func_table = {
+        0: (waveOneColor, (4., 0, 0, 255, 0)),
+        1: (fixedColor, (YELLOW1)),
+        2: (waveTwoColor, (4., 0, 255, 0, 0, 0, 0, 255, False)),
+        3: (occultationOneColor, (5, 1, 0, RED1)),
+        4: (waveOneColor, (4., 0, 128, 0, 255)),
+        5: (waveOneColor, (4., 0, 128, 0, 255)),
+    }
+    func_table[1] = (fixedColor, (AQUA))
+    while True:
+        t = time.time()
+        for i in range(LED_COUNT):
+            func, args = func_table[i]
+            if isinstance(args, Iterable):
+                strip.setPixelColor(i, func(t, *args))
+            else:
+                strip.setPixelColor(i, func(t, args))
 
-	# Intialize the library (must be called once before other functions).
-	strip.begin()
-        clearStrip(strip)
-        fd = 1/5
-        func_table = {
-            0: (waveOneColor, (4., 0, 0, 255, 0)),
-            1: (fixedColor, (YELLOW1)),
-            2: (waveTwoColor, (4.,0, 255, 0, 0, 0, 0, 255, False)),
-            3: (occultationOneColor, (5, 1, 0, RED1)),
-            4: (waveOneColor, (4., 0, 128, 0, 255)),
-            5: (waveOneColor, (4., 0, 128, 0, 255)),
-        }
-        func_table[1] = (fixedColor, (AQUA))
-        while True:
-            t = time.time()
-            for i  in range(LED_COUNT):
-                func, args = func_table[i]
-                if isinstance(args, Iterable):
-                    strip.setPixelColor(i, func(t, *args))
-                else:
-                    strip.setPixelColor(i, func(t, args))
+        # strip.setPixelColor(0, waveOneColor(t, 4., 0, 128, 0, 255))
+        # strip.setPixelColor(0, fixedColor(t, AQUAMARINE1))
 
-            #strip.setPixelColor(0, waveOneColor(t, 4., 0, 128, 0, 255))
-            #strip.setPixelColor(0, fixedColor(t, AQUAMARINE1))
+        # strip.setPixelColor(1,occultationOneColor(t, 2, 2, 0, 255, 0, 255))
+        # strip.setPixelColor(2,occultationOneColor(t, 0.2, 4.8, 0, 128, 128, 128))
+        # strip.setPixelColor(3,waveTwoColor(t, 4.,0, 128, 0, 255, 0, 0, 0, False))
+        # strip.setPixelColor(4,waveTwoColor(t, 4.,0, 255, 0, 0, 0, 0, 255, True))
+        # strip.setPixelColor(5,waveTwoColor(t, 4.,0, 255, 0, 0, 0, 0, 255, False))
+        strip.show()
+        time.sleep(fd)
 
-            # strip.setPixelColor(1,occultationOneColor(t, 2, 2, 0, 255, 0, 255))
-            # strip.setPixelColor(2,occultationOneColor(t, 0.2, 4.8, 0, 128, 128, 128))
-            # strip.setPixelColor(3,waveTwoColor(t, 4.,0, 128, 0, 255, 0, 0, 0, False))
-            # strip.setPixelColor(4,waveTwoColor(t, 4.,0, 255, 0, 0, 0, 0, 255, True))
-            # strip.setPixelColor(5,waveTwoColor(t, 4.,0, 255, 0, 0, 0, 0, 255, False))
-            strip.show()
-            time.sleep(fd)
-
-        clearStrip(strip)
+    clearStrip(strip)
