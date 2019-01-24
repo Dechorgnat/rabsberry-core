@@ -7,7 +7,13 @@
 import time
 import math
 from rpi_ws281x import *
+from collections import Iterable
+import signal
+import sys
 
+def signal_handler(sig, frame):
+    clearStrip(strip)
+    sys.exit(0)
 
 # LED strip configuration:
 LED_COUNT      = 6      # Number of LED pixels.
@@ -612,23 +618,30 @@ def clearStrip(strip):
 if __name__ == '__main__':
 	# Create NeoPixel object with appropriate configuration.
 	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+
+        signal.signal(signal.SIGINT, signal_handler)
+
 	# Intialize the library (must be called once before other functions).
 	strip.begin()
         clearStrip(strip)
         fd = 1/5
         func_table = {
-            0: (waveOneColor, (4., 0, 128, 0, 255)),
-            1: (fixedColor, (AQUAMARINE1)),
-            2: (occultationOneColor, (2, 2, 0, 255, 0, 0)),
-            3: (waveTwoColor, (4.,0, 255, 0, 0, 0, 0, 255, False)),
-            4: (fixedColor, (BLACK)),
-            5: (fixedColor, (BLACK))
+            0: (waveOneColor, (4., 0, 0, 255, 0)),
+            1: (fixedColor, (YELLOW1)),
+            2: (waveTwoColor, (4.,0, 255, 0, 0, 0, 0, 255, False)),
+            3: (occultationOneColor, (5, 1, 0, RED1)),
+            4: (waveOneColor, (4., 0, 128, 0, 255)),
+            5: (waveOneColor, (4., 0, 128, 0, 255)),
         }
+        func_table[1] = (fixedColor, (AQUA))
         while True:
             t = time.time()
             for i  in range(LED_COUNT):
                 func, args = func_table[i]
-                strip.setPixelColor(i, func(t, *args))
+                if isinstance(args, Iterable):
+                    strip.setPixelColor(i, func(t, *args))
+                else:
+                    strip.setPixelColor(i, func(t, args))
 
             #strip.setPixelColor(0, waveOneColor(t, 4., 0, 128, 0, 255))
             #strip.setPixelColor(0, fixedColor(t, AQUAMARINE1))
