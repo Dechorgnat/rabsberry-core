@@ -10,6 +10,7 @@ from rpi_ws281x import *
 from collections import Iterable
 import signal
 import sys
+from core.tools.config import getConfig
 
 # Color Contants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
 ALICEBLUE = Color(240, 248, 255)
@@ -568,7 +569,6 @@ YELLOW4 = Color(139, 139, 0)
 
 # LED strip configuration:
 LED_COUNT = 6  # Number of LED pixels.
-LED_PIN = 18  # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 30  # Set to 0 for darkest and 255 for brightest
@@ -618,8 +618,10 @@ def clearStrip(strip):
 
 # Main program logic follows:
 if __name__ == '__main__':
+    conf = getConfig()
+    led_pin = getConfig()['LED_PIN']
     # Create NeoPixel object with appropriate configuration.
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+    strip = Adafruit_NeoPixel(LED_COUNT, led_pin, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
     # set signal handler to catch ctrl C
     signal.signal(signal.SIGINT, signal_handler)
 

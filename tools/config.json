@@ -1,0 +1,7 @@
+{
+"CORE_ROOT":"/home/pi/Rabsberry/core/",
+"WEB_ROOT":"/home/pi/Rabsberry/rabsberry-web/",
+"INTF_ROOT":"/home/pi/Rabsberry/rabsberry-interfaces/",
+
+"LED_PIN": 18
+}
