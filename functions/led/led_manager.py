@@ -623,9 +623,14 @@ def clearStrip(strip):
 #define callback
 def on_message(client, userdata, message):
     print("received message =",str(message.payload.decode("utf-8")))
-    func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
-    func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
-    func_table[2] = (waveOneColor, (4., 0, 255, 0, 0))
+    if message == 'on':
+        func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
+        func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
+        func_table[2] = (waveOneColor, (4., 0, 255, 0, 0))
+    if message == 'off':
+        func_table[0] = (waveOneColor, (4., 0, 255, 0, 255))
+        func_table[1] = (waveOneColor, (4., 0, 255, 0, 255))
+        func_table[2] = (waveOneColor, (4., 0, 255, 0, 255))
 
 
 # Main program logic follows:
@@ -648,7 +653,7 @@ if __name__ == '__main__':
     }
 
     # init mqtt connection and subscribe
-    client = paho.Client("ears_manager")  # create client
+    client = paho.Client("led_manager")  # create client
     client.on_message = on_message # Bind function to callback
     client.connect(broker)  # connect
     client.loop_start()  # start loop to process received messages
