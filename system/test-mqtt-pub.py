@@ -17,5 +17,5 @@ client= paho.Client("controller") #create client object client1.on_publish = on_
 print("connecting to broker ",broker)
 client.connect(broker)#connect
 print("publishing ")
-client.publish(args.channel, args.msg)#publish
+client.publish(args.channel, args.msg[0])#publish
 client.disconnect() #disconnect

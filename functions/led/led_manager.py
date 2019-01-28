@@ -623,14 +623,15 @@ def clearStrip(strip):
 #define callback
 def on_message(client, userdata, message):
     print("received message =",str(message.payload.decode("utf-8")))
-    if message == 'on':
+    message =str(message.payload.decode("utf-8"))
+    if message == "on":
         func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[2] = (waveOneColor, (4., 0, 255, 0, 0))
-    if message == 'off':
-        func_table[0] = (waveOneColor, (4., 0, 255, 0, 255))
-        func_table[1] = (waveOneColor, (4., 0, 255, 0, 255))
-        func_table[2] = (waveOneColor, (4., 0, 255, 0, 255))
+    if message == "off":
+        func_table[0] = (waveOneColor, (3., 0, 255, 0, 0))
+        func_table[1] = (waveOneColor, (3., 1.0, 255, 255, 0))
+        func_table[2] = (waveOneColor, (3., 2.0, 0, 0, 255))
 
 
 # Main program logic follows:
