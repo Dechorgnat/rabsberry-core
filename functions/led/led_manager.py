@@ -13,7 +13,7 @@ import signal
 import sys
 from core.tools.config import getConfig
 
-# Color Contants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
+# Color Constants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
 ALICEBLUE = Color(240, 248, 255)
 ANTIQUEWHITE = Color(250, 235, 215)
 ANTIQUEWHITE1 = Color(255, 239, 219)
@@ -569,11 +569,17 @@ YELLOW3 = Color(205, 205, 0)
 YELLOW4 = Color(139, 139, 0)
 
 # LED strip configuration:
-LED_COUNT = 6  # Number of LED pixels.
+LED_COUNT = 5  # Number of LED pixels.
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 30  # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
+
+NOSE = 0
+LEFT = 1
+CENTER = 2
+RIGHT = 3
+BOTTOM = 4
 
 broker="127.0.0.1"
 
@@ -622,8 +628,9 @@ def clearStrip(strip):
 
 #define callback
 def on_message(client, userdata, message):
-    print("received message =",str(message.payload.decode("utf-8")))
     message =str(message.payload.decode("utf-8"))
+    print("received message =", message)
+
     if message == "on":
         func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
@@ -650,7 +657,7 @@ if __name__ == '__main__':
         2: (fixedColor, (BLACK)),
         3: (occultationOneColor, (5, 1, 0, RED1)),
         4: (waveTwoColor, (4., 0, 255, 0, 0, 0, 0, 255, False)),
-        5: (waveOneColor, (4., 0, 128, 0, 255)),
+        # 5: (waveOneColor, (4., 0, 128, 0, 255)),
     }
 
     # init mqtt connection and subscribe
