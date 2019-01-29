@@ -1,7 +1,17 @@
 {
-"CORE_ROOT":"/home/pi/Rabsberry/core/",
-"WEB_ROOT":"/home/pi/Rabsberry/rabsberry-web/",
-"INTF_ROOT":"/home/pi/Rabsberry/rabsberry-interfaces/",
+  "CORE_ROOT":"/home/pi/Rabsberry/core/",
+  "WEB_ROOT":"/home/pi/Rabsberry/rabsberry-web/",
+  "INTF_ROOT":"/home/pi/Rabsberry/rabsberry-interfaces/",
 
-"LED_PIN": 18
+  "LED_PIN": 18,
+
+  "RIGHT_EAR_ENABLE": 18,
+  "RIGHT_EAR_IN1": 16,
+  "RIGHT_EAR_IN2": 22,
+  "RIGHT_EAR_INDEXER": 13,
+
+  "LEFT_EAR_ENABLE": 23,
+  "LEFT_EAR_IN1": 19,
+  "LEFT_EAR_IN2": 21,
+  "LEFT_EAR_INDEXER": 15
 }
