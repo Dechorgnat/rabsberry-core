@@ -572,7 +572,7 @@ YELLOW4 = Color(139, 139, 0)
 LED_COUNT = 5  # Number of LED pixels.
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 5)
-LED_BRIGHTNESS = 30  # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 40  # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 
 NOSE = 0
@@ -630,7 +630,8 @@ def clearStrip(strip):
 def on_message(client, userdata, message):
     message =str(message.payload.decode("utf-8"))
     print("received message =", message)
-
+    if message == "stop":
+        signal_handler(null, null)
     if message == "on":
         func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
@@ -639,6 +640,10 @@ def on_message(client, userdata, message):
         func_table[0] = (waveOneColor, (3., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (3., 1.0, 255, 255, 0))
         func_table[2] = (waveOneColor, (3., 2.0, 0, 0, 255))
+    if message == "random":
+        func_table[0] = (occultationOneColor, (2., 1.0, 1.0, BLUE))
+        func_table[1] = (occultationOneColor, (2.5, 0.5, 0., YELLOW1))
+        func_table[2] = (occultationOneColor, (1.0, 2., 0.5, RED1))
 
 
 # Main program logic follows:
@@ -656,8 +661,8 @@ if __name__ == '__main__':
         1: (fixedColor, (BLACK)),
         2: (fixedColor, (BLACK)),
         3: (occultationOneColor, (5, 1, 0, RED1)),
-        4: (waveTwoColor, (4., 0, 255, 0, 0, 0, 0, 255, False)),
-        # 5: (waveOneColor, (4., 0, 128, 0, 255)),
+        4: (waveOneColor, (4., 0, 128, 0, 255)),
+        #5: (waveTwoColor, (4., 0, 255, 0, 0, 0, 0, 255, False)),
     }
 
     # init mqtt connection and subscribe
