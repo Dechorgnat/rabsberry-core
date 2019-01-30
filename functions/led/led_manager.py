@@ -31,6 +31,10 @@ broker="127.0.0.1"
 
 
 def signal_handler(sig, frame):
+    stop_manager()
+
+
+def stop_manager():
     clearStrip(strip)
     client.disconnect()  # disconnect
     client.loop_stop()  # stop loop
@@ -80,7 +84,7 @@ def on_message(client, userdata, message):
     message =str(message.payload.decode("utf-8"))
     print("received message =", message)
     if message == "stop":
-        signal_handler(None, None)
+        stop_manager()
     if message == "on":
         func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
@@ -123,8 +127,7 @@ if __name__ == '__main__':
 
     # set signal handler to catch ctrl C
     signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGKILL, signal_handler)
-    signal.signal(signal.SIGQUIT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
     while True:
         t = time.time()
