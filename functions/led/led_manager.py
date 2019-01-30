@@ -123,6 +123,8 @@ if __name__ == '__main__':
 
     # set signal handler to catch ctrl C
     signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGKILL, signal_handler)
+    signal.signal(signal.SIGQUIT, signal_handler)
 
     while True:
         t = time.time()
