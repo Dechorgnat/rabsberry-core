@@ -11,8 +11,8 @@
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
-DIR=/home/pi/Rabsberry/core
-DAEMON=$DIR/functions/top_button/top_button.py
+DIR=/home/pi/Rabsberry
+DAEMON=$DIR/core/functions/top_button/top_button.py
 DAEMON_NAME=rabsberry_top_button
 
 # Add any command line options for your daemon here
@@ -24,6 +24,9 @@ DAEMON_USER=root
 
 # The process ID of the script when it runs is stored here:
 PIDFILE=/var/run/$DAEMON_NAME.pid
+
+export PYTHON_PATH=$DIR
+export RABSBERRY_HOME=$DIR
 
 . /lib/lsb/init-functions
 
