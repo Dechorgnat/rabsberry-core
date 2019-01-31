@@ -111,7 +111,7 @@ if __name__ == '__main__':
     fd = 1 / 5
     func_table = {
         0: (fixedColor, BLACK),
-        1: (fixedColor, BLACK),
+        1: (waveOneColor, (3., 0, 128, 0, 255)),
         2: (fixedColor, BLACK),
         3: (occultationOneColor, (5, 1, 0, RED1)),
         4: (waveOneColor, (4., 0, 128, 0, 255)),
