@@ -5,6 +5,7 @@
 # Direct port of the Arduino NeoPixel library strandtest example.  Showcases
 # various animations on a strip of NeoPixels.
 import time
+import json
 import paho.mqtt.client as paho
 import math
 from rpi_ws281x import Color, Adafruit_NeoPixel
@@ -83,21 +84,30 @@ def clearStrip(strip):
 def on_message(client, userdata, message):
     message =str(message.payload.decode("utf-8"))
     print("received message =", message)
-    if message == "stop":
-        stop_manager()
-    if message == "on":
+    event = json.loads(message)
+    if event.command == "stop":
+        return stop_manager()
+    if event.command == "on":
         func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
         func_table[2] = (waveOneColor, (4., 0, 255, 0, 0))
-    if message == "off":
+        return
+    if event.command == "off":
         func_table[0] = (waveOneColor, (3., 0, 255, 0, 0))
         func_table[1] = (waveOneColor, (3., 1.0, 255, 255, 0))
         func_table[2] = (waveOneColor, (3., 2.0, 0, 0, 255))
-    if message == "random":
-        func_table[0] = (occultationOneColor, (2., 1.0, 1.0, BLUE))
-        func_table[1] = (occultationOneColor, (2.5, 0.5, 0., YELLOW1))
-        func_table[2] = (occultationOneColor, (1.0, 2., 0.5, RED1))
-
+        return
+    if event.command == "set":
+        func_table[event.led] = (fixedColor, Color(event.r, event.g, event.b))
+        return
+    if event.command == "set_all":
+        for i in range(0, LED_COUNT-1):
+            func_table[i] = (fixedColor, Color(event.r, event.g, event.b))
+        return
+    if event.command == "set_all_off":
+        for i in range(0, LED_COUNT-1):
+            func_table[i] = (fixedColor, BLACK)
+        return
 
 # Main program logic follows:
 if __name__ == '__main__':
