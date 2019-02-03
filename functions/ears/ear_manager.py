@@ -22,20 +22,22 @@ def signal_handler(sig, frame):
 
 # define callback
 def onmessage(client, userdata, message):
-    message =str(message.payload.decode("utf-8"))
-    print "received message: "+ message
-    event = json.loads(message)
-        
-    if event['command'] == 'goto':
-        print event['command']
-        if event['ear'] == 'left':
-            left_ear.goto(event['pos'], event['sens'])
-        if event['ear'] == 'right':
-            right_ear.goto(event['pos'], event['sens'])
-        if event['ear'] == 'both':
-            right_ear.goto(event['pos'], event['sens'])
-            left_ear.goto(event['pos'], event['sens'])
-    
+    try:
+        message =str(message.payload.decode("utf-8"))
+        print "received message: "+ message
+        event = json.loads(message)
+
+        if event['command'] == 'goto':
+            print event['command']
+            if event['ear'] == 'left':
+                left_ear.goto(event['pos'], event['sens'])
+            if event['ear'] == 'right':
+                right_ear.goto(event['pos'], event['sens'])
+            if event['ear'] == 'both':
+                right_ear.goto(event['pos'], event['sens'])
+                left_ear.goto(event['pos'], event['sens'])
+    except Exception as e:
+        print e.message
 
 if __name__ == "__main__":
     conf = getConfig()
@@ -66,6 +68,8 @@ if __name__ == "__main__":
 
     # set signal handler to catch ctrl C
     signal.signal(signal.SIGINT, signal_handler)
+
+    print "Ready to receive message"
 
     # waiting for calibration
     time.sleep(10)
