@@ -5,6 +5,7 @@ import paho.mqtt.client as paho
 import time
 import signal
 import sys
+import json
 from core.tools.config import getConfig
 
 broker="127.0.0.1"
@@ -21,12 +22,9 @@ def signal_handler(sig, frame):
 
 # define callback
 def onmessage(client, userdata, message):
-    raise NotImplementedError
     message =str(message.payload.decode("utf-8"))
     print "received message: "+ message
     event = json.loads(message)
-    print event['command'] 
-    print "re-merde"
         
     if event['command'] == 'goto':
         print event['command']
