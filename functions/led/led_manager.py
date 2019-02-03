@@ -83,8 +83,9 @@ def clearStrip(strip):
 #define MQTT callback
 def on_message(client, userdata, message):
     message =str(message.payload.decode("utf-8"))
-    # print("received message =", message)
+    print "received message: " + message
     event = json.loads(message)
+    print event
 
     if event['command'] == 'stop':
         print event['command']

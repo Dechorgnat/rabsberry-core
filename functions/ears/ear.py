@@ -3,12 +3,14 @@
 import RPi.GPIO as GPIO
 import time
 import requests
+import sys
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 class Ear:
     FORWARD = "forward"
     BACKWARD = "backward"
+    calibration_state = "not"
 
     def __init__(self, enable, in1, in2, indexer):
         self.enable = enable
@@ -32,7 +34,7 @@ class Ear:
         GPIO.output(self.in1,GPIO.LOW)
         GPIO.output(self.in2,GPIO.LOW)
         GPIO.output(self.enable,GPIO.LOW)
-        GPIO.add_event_detect(self.indexer, GPIO.FALLING, callback=self.front_detected, bouncetime=30)
+        GPIO.add_event_detect(self.indexer, GPIO.FALLING, callback=self.front_detected, bouncetime=100)
 
     def front_detected(self, channel):
         #print "front detected ", self.calibrating, self.running, self.position
@@ -40,6 +42,13 @@ class Ear:
             delay = current_milli_time() - self.last_tick
             self.last_tick = current_milli_time()
             self.num = self.num+1
+            if self.num >20:
+                print "failed to calibrate"
+                self.calibration_state = "failed"
+                self.goal = -1
+                self.calibrating = False
+                self.stop()
+                return
             if delay>800:
                 self.goal = 17 - self.num
                 self.num = 0
@@ -53,6 +62,7 @@ class Ear:
                 self.stop()
                 self.goal = -1
                 self.calibrating = False
+                self.calibration_state = "success"
         else:
             # not calibrating
             if self.running:
@@ -123,6 +133,9 @@ if __name__ == "__main__":
 
     print "Left  position : ", left_ear.get_position()
     print "Right position : ", right_ear.get_position()
+    
+    if right_ear.calibration_state == "failed":
+        sys.exit(1)
 
     print "Left  going forward 1.5s"
     left_ear.start(Ear.FORWARD)
