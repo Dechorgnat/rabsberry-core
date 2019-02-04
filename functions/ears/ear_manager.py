@@ -37,6 +37,10 @@ def onmessage(client, userdata, message):
             if event['ear'] == 'both':
                 right_ear.goto(event['pos'], event['dir'])
                 left_ear.goto(event['pos'], event['dir'])
+        # TODO step command
+
+        # TODO stop command
+
     except Exception as e:
         print e
 

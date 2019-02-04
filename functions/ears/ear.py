@@ -79,7 +79,7 @@ class Ear:
                     self.stop()
                     self.goal = -1
             else: # manual change of ear position
-                # TODO
+                # TODO manual change detected
                 print "manual change detected"
                 self.manual_change = True
 
