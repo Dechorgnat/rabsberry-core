@@ -110,7 +110,7 @@ def on_message(client, userdata, message):
             func_table[CENTER] = (waveOneColor, (3., 0, 255, 255, 0))
             func_table[RIGHT]  = (waveOneColor, (3., 0, 0, 0, 255))
             return
-        if event['pattern']=='brouillard': # Trois bleues qui clignotent en même temps
+        if event['pattern']=='brouillard': # Trois bleues qui clignotent en meme temps
             func_table[LEFT]   = (waveOneColor, (3., 0, 0, 0, 255))
             func_table[CENTER] = (waveOneColor, (3., 0, 0, 0, 255))
             func_table[RIGHT]  = (waveOneColor, (3., 0, 0, 0, 255))
