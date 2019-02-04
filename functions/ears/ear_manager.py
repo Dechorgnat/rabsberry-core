@@ -20,6 +20,7 @@ def signal_handler(sig, frame):
 
     sys.exit(0)
 
+
 # define callback
 def onmessage(client, userdata, message):
     try:
@@ -30,34 +31,33 @@ def onmessage(client, userdata, message):
         if event['command'] == 'goto':
             print event['command']
             if event['ear'] == 'left':
-                left_ear.goto(event['pos'], event['sens'])
+                left_ear.goto(event['pos'], event['dir'])
             if event['ear'] == 'right':
-                right_ear.goto(event['pos'], event['sens'])
+                right_ear.goto(event['pos'], event['dir'])
             if event['ear'] == 'both':
-                right_ear.goto(event['pos'], event['sens'])
-                left_ear.goto(event['pos'], event['sens'])
+                right_ear.goto(event['pos'], event['dir'])
+                left_ear.goto(event['pos'], event['dir'])
     except Exception as e:
-        print e.message
+        print e
 
 if __name__ == "__main__":
     conf = getConfig()
 
-    right_ear_enable = getConfig()["RIGHT_EAR_ENABLE"]
-    right_ear_in_one = getConfig()["RIGHT_EAR_IN1"]
-    right_ear_in_two = getConfig()["RIGHT_EAR_IN2"]
-    right_ear_indexer = getConfig()["RIGHT_EAR_INDEXER"]
+    right_ear_enable = conf["RIGHT_EAR_ENABLE"]
+    right_ear_in_one = conf["RIGHT_EAR_IN1"]
+    right_ear_in_two = conf["RIGHT_EAR_IN2"]
+    right_ear_indexer = conf["RIGHT_EAR_INDEXER"]
 
     right_ear = Ear(right_ear_enable, right_ear_in_one, right_ear_in_two, right_ear_indexer)
     right_ear.calibrate()
 
-    left_ear_enable = getConfig()["LEFT_EAR_ENABLE"]
-    left_ear_in_one = getConfig()["LEFT_EAR_IN1"]
-    left_ear_in_two = getConfig()["LEFT_EAR_IN2"]
-    left_ear_indexer = getConfig()["LEFT_EAR_INDEXER"]
+    left_ear_enable = conf["LEFT_EAR_ENABLE"]
+    left_ear_in_one = conf["LEFT_EAR_IN1"]
+    left_ear_in_two = conf["LEFT_EAR_IN2"]
+    left_ear_indexer = conf["LEFT_EAR_INDEXER"]
 
     left_ear = Ear(left_ear_enable, left_ear_in_one, left_ear_in_two, left_ear_indexer)
     left_ear.calibrate()
-
 
     # init mqtt connection and subscribe
     client = paho.Client("ears_manager")  # create client
@@ -68,11 +68,12 @@ if __name__ == "__main__":
 
     # set signal handler to catch ctrl C
     signal.signal(signal.SIGINT, signal_handler)
-
-    print "Ready to receive message"
+    signal.signal(signal.SIGTERM, signal_handler)
 
     # waiting for calibration
     time.sleep(10)
     
+    print "Ready to receive message"
+
     while True:
         time.sleep(1)
