@@ -90,11 +90,16 @@ def on_message(client, userdata, message):
     if event['command'] == 'stop':
         print event['command']
         return stop_manager()
-    if event['command'] == 'on':
+    if event['command'] == 'pattern':
         print event['command']
-        func_table[0] = (waveOneColor, (4., 0, 255, 0, 0))
-        func_table[1] = (waveOneColor, (4., 0, 255, 0, 0))
-        func_table[2] = (waveOneColor, (4., 0, 255, 0, 0))
+        if event['pattern']=='pluie':
+            func_table[0] = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[1] = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[2] = (waveOneColor, (3., 0, 0, 0, 255))
+        if event['pattern']=='soleil':
+            func_table[0] = (waveOneColor, (3., 0, 255, 255, 0))
+            func_table[1] = (waveOneColor, (3., 0, 255, 255, 0))
+            func_table[2] = (waveOneColor, (3., 0, 255, 255, 0))
         return
     if event['command'] == 'off':
         print event['command']
