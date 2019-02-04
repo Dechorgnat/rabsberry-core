@@ -22,10 +22,10 @@ LED_DMA = 10  # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 255 # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 
-NOSE = 0
-LEFT = 1
-CENTER = 2
-RIGHT = 3
+NOSE = 3
+LEFT = 0
+CENTER = 1
+RIGHT = 2
 BOTTOM = 4
 
 broker="127.0.0.1"
@@ -48,6 +48,18 @@ def occultationOneColor(t, on, off, offset, color):
     if phase > on:
         return BLACK
     return color
+
+
+def occultationTwoColor(t, on_one, off_one, on_two, off_two, offset, color_one, color_two):
+    period = on_one + off_one + on_two + off_two
+    phase = (t + offset) % period
+    if phase < on_one:
+        return color_one
+    if phase < on_one + off_one:
+        return BLACK
+    if phase < on_one + off_one + on_two:
+        return color_two
+    return BLACK
 
 
 def waveOneColor(t, period, offset, r, g, b):
@@ -92,20 +104,37 @@ def on_message(client, userdata, message):
         return stop_manager()
     if event['command'] == 'pattern':
         print event['command']
-        if event['pattern']=='pluie':
-            func_table[0] = (waveOneColor, (3., 0, 0, 0, 255))
-            func_table[1] = (waveOneColor, (3., 0, 0, 0, 255))
-            func_table[2] = (waveOneColor, (3., 0, 0, 0, 255))
-        if event['pattern']=='soleil':
-            func_table[0] = (waveOneColor, (3., 0, 255, 255, 0))
-            func_table[1] = (waveOneColor, (3., 0, 255, 255, 0))
-            func_table[2] = (waveOneColor, (3., 0, 255, 255, 0))
-        return
-    if event['command'] == 'off':
-        print event['command']
-        func_table[0] = (waveOneColor, (3., 0, 255, 0, 0))
-        func_table[1] = (waveOneColor, (3., 1.0, 255, 255, 0))
-        func_table[2] = (waveOneColor, (3., 2.0, 0, 0, 255))
+        # patterns for meteo
+        if event['pattern']=='nuage': # Une bleue, une jaune, une bleue
+            func_table[LEFT]   = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[CENTER] = (waveOneColor, (3., 0, 255, 255, 0))
+            func_table[RIGHT]  = (waveOneColor, (3., 0, 0, 0, 255))
+            return
+        if event['pattern']=='brouillard': # Trois bleues qui clignotent en même temps
+            func_table[LEFT]   = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[CENTER] = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[RIGHT]  = (waveOneColor, (3., 0, 0, 0, 255))
+            return
+        if event['pattern']=='pluie': # Trois bleues qui clignotent alternativement
+            func_table[LEFT]   = (occultationOneColor, (3, 2, 0, BLUE))
+            func_table[CENTER] = (occultationOneColor, (3, 2, 2, BLUE))
+            func_table[RIGHT]  = (occultationOneColor, (3, 2, 1, BLUE))
+            return
+        if event['pattern']=='orage': # Une bleue et une jaune qui changent de position
+            func_table[LEFT]   = (occultationTwoColor, (1, 0, 1, 1, 2, BLUE, YELLOW)) # NBJ
+            func_table[CENTER] = (occultationTwoColor, (1, 1, 1, 0, 0, YELLOW, BLUE)) # JNB
+            func_table[RIGHT]  = (occultationTwoColor, (1, 0, 1, 1, 0, BLUE, YELLOW)) # BJN
+            return
+        if event['pattern']=='neige': # Le milieu qui clignote en bleu
+            func_table[LEFT]   = (fixedColor, BLACK)
+            func_table[CENTER] = (waveOneColor, (3., 0, 0, 0, 255))
+            func_table[RIGHT]  = (fixedColor, BLACK)
+            return
+        if event['pattern']=='soleil': # Trois jaunes (clignotent ensemble)
+            func_table[LEFT]   = (waveOneColor, (3., 0, 255, 255, 0))
+            func_table[CENTER] = (waveOneColor, (3., 0, 255, 255, 0))
+            func_table[RIGHT]  = (waveOneColor, (3., 0, 255, 255, 0))
+            return
         return
     if event['command'] == 'set':
         for i in event['leds']:
