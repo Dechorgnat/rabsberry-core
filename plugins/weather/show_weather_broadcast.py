@@ -12,7 +12,7 @@ import paho.mqtt.client as paho
 
 # Nous construisons ensuite la requête pour obtenir le temps actuel.
 openWeatherMapQuery = {
-    'q': 'Grindelwald, Suisse',
+    'q': 'Rennes, France',
     'lang': 'fr',
     'units': 'metric',
     'appid': '0885ba357698e289ada592480c0cb75e'
@@ -37,7 +37,7 @@ elif condition == 'Clouds':
     condition = 'nuage'
 elif condition == 'Snow':
     condition = 'neige'
-elif condition == 'Mist':
+elif condition == 'Mist' or condition == 'Fog':
     condition = 'brouillard'
 elif condition == 'Thunderstorm':
     condition = 'orage'

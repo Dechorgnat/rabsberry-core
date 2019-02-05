@@ -19,7 +19,7 @@ from colors import *
 LED_COUNT = 5  # Number of LED pixels.
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 5)
-LED_BRIGHTNESS = 255 # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 100 # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 
 NOSE = 3
@@ -81,6 +81,25 @@ def waveTwoColor(t, period, offset, r1, g1, b1, r2, g2, b2, fading):
         else:
             return Color(int(-k * r2), int(-k * g2), int(-k * b2))
 
+def scheme(t, start, loop, tab):
+    phase = t - start
+    if loop:
+        i = 0
+        period = 0 
+        while i < len(tab):
+            period = period +tab[i]
+            i = i + 4
+        phase = phase % period
+    i = 0
+    d = 0   
+    while i < len(tab):
+        d = d + tab[i]  
+        if phase < d:        
+            r = tab[i+1]
+            g = tab[i+2]
+            b = tab[i+3]
+            return Color(r, g, b)
+        i = i + 4
 
 def fixedColor(t, color):
     return color
@@ -101,6 +120,12 @@ def on_message(client, userdata, message):
 
     if event['command'] == 'stop':
         print event['command']
+        return stop_manager()
+    if event['command'] == 'scheme':
+        print event['command']
+        for i in event['leds']:
+            func_table[int(i)] = (scheme, (time.time(), event['loop'] , event['scheme'])) 
+        return
         return stop_manager()
     if event['command'] == 'pattern':
         print event['command']
@@ -131,9 +156,17 @@ def on_message(client, userdata, message):
             func_table[RIGHT]  = (fixedColor, BLACK)
             return
         if event['pattern']=='soleil': # Trois jaunes (clignotent ensemble)
-            func_table[LEFT]   = (waveOneColor, (3., 0, 255, 255, 0))
-            func_table[CENTER] = (waveOneColor, (3., 0, 255, 255, 0))
-            func_table[RIGHT]  = (waveOneColor, (3., 0, 255, 255, 0))
+            period = 3
+            func_table[LEFT]   = (waveOneColor, (period, 0, 255, 255, 0))
+            func_table[CENTER] = (waveOneColor, (period, 0, 255, 255, 0))
+            func_table[RIGHT]  = (waveOneColor, (period, 0, 255, 255, 0))
+            return
+        # others
+        if event['pattern']=='google': 
+            freq = 0.7
+            func_table[LEFT]   = (occultationOneColor, (freq, 3*freq, 0 , BLUE ))
+            func_table[CENTER] = (occultationOneColor, (freq, 3*freq, -freq, RED))
+            func_table[RIGHT]  = (occultationOneColor, (freq, 3*freq, -2*freq, YELLOW))
             return
         return
     if event['command'] == 'set':
@@ -156,7 +189,7 @@ if __name__ == '__main__':
     clearStrip(strip)
     fd = 1 / 5
     func_table = {
-        0: (fixedColor, BLACK),
+        0: (scheme, (time.time(), True , [3, 0, 0, 255, 1, 255, 0, 0,  2, 0, 255, 0, 5, 0, 0, 0])) ,
         1: (waveOneColor, (3., 0, 128, 0, 255)),
         2: (fixedColor, BLACK),
         3: (occultationOneColor, (5, 1, 0, RED1)),
