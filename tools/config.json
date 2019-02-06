@@ -3,6 +3,8 @@
   "WEB_ROOT":"/home/pi/Rabsberry/rabsberry-web/",
   "INTF_ROOT":"/home/pi/Rabsberry/rabsberry-interfaces/",
 
+  "TOP_BUTTON": 11,
+
   "LED_PIN": 18,
 
   "RIGHT_EAR_ENABLE": 18,

@@ -6,6 +6,7 @@ import requests
 import signal
 import sys
 import logging
+from core.tools.config import getConfig
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG, filename='/var/log/rabsberry/top_button.log')
  
 
@@ -54,10 +55,11 @@ def callback_short_pressed():
 
 
 def callback_long_pressed():
-    print "callback_long_pressed"
+    logging.debug("callback_long_pressed")
+    call_rabsberry_event_api("LONG_PRESSED")
 
 
-top_button = Top_button(11, callback_short_pressed, callback_long_pressed)
+top_button = Top_button(getConfig()['TOP_BUTTON'], callback_short_pressed, callback_long_pressed)
 top_button.start_listening()
 signal.signal(signal.SIGTERM, signal_term_handler)
 signal.signal(signal.SIGINT, signal_term_handler)
