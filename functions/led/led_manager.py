@@ -180,8 +180,8 @@ def on_message(client, userdata, message):
 
 # Main program logic follows:
 if __name__ == '__main__':
-    conf = getConfig()
     led_pin = getConfig()['LED_PIN']
+    print "Led manager starting on pin "+str(led_pin)
 
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, led_pin, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)

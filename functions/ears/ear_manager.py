@@ -27,7 +27,8 @@ def onmessage(client, userdata, message):
         message =str(message.payload.decode("utf-8"))
         print "received message: "+ message
         event = json.loads(message)
-
+        
+        # goto command
         if event['command'] == 'goto':
             print event['command']
             if event['ear'] == 'left':
@@ -37,9 +38,28 @@ def onmessage(client, userdata, message):
             if event['ear'] == 'both':
                 right_ear.goto(event['pos'], event['dir'])
                 left_ear.goto(event['pos'], event['dir'])
-        # TODO step command
-
-        # TODO stop command
+        return
+        # step command
+        if event['command'] == 'step':
+            print event['command']
+            if event['ear'] == 'left':
+                left_ear.step(event['pos'], event['dir'])
+            if event['ear'] == 'right':
+                right_ear.step(event['pos'], event['dir'])
+            if event['ear'] == 'both':
+                right_ear.step(event['pos'], event['dir'])
+                left_ear.step(event['pos'], event['dir'])
+        return
+        # stop command
+        if event['command'] == 'stop':
+            print event['command']
+            if event['ear'] == 'left':
+                left_ear.stop()
+            if event['ear'] == 'right':
+                right_ear.stop()
+            if event['ear'] == 'both':
+                right_ear.stop()
+                left_ear.stop()
 
     except Exception as e:
         print e

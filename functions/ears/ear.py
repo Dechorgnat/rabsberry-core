@@ -111,6 +111,18 @@ class Ear:
         self.goal = position
         self.start(direction)
 
+    def step(self, steps, direction):
+        if direction == ear.FORWARD:
+            goal == self.position + steps
+            if goal > 17:
+                goal = goal - 17
+        else:
+            goal == self.position - steps
+            if goal < 0:
+                goal = goal + 17
+        print "going ", direction, " to position ", goal
+        self.goto(goal, direction)
+
     def get_position(self):
         return self.position
 
