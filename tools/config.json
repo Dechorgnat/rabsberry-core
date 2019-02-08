@@ -5,7 +5,8 @@
 
   "TOP_BUTTON": 11,
 
-  "LED_PIN": 18,
+  "LED_PIN": 13,
+  "LED_CHANNEL": 1,
 
   "RIGHT_EAR_ENABLE": 18,
   "RIGHT_EAR_IN1": 16,

@@ -22,11 +22,11 @@ LED_DMA = 10  # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 100 # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 
-NOSE = 3
-LEFT = 0
-CENTER = 1
-RIGHT = 2
-BOTTOM = 4
+NOSE = 4
+LEFT = 1
+CENTER = 2
+RIGHT = 3
+BOTTOM = 0
 
 broker="127.0.0.1"
 
@@ -130,6 +130,7 @@ def on_message(client, userdata, message):
     if event['command'] == 'pattern':
         print event['command']
         # patterns for meteo
+        func_table[NOSE]  = (fixedColor, BLACK)
         if event['pattern']=='nuage': # Une bleue, une jaune, une bleue
             func_table[LEFT]   = (waveOneColor, (3., 0, 0, 0, 255))
             func_table[CENTER] = (waveOneColor, (3., 0, 255, 255, 0))
@@ -141,9 +142,10 @@ def on_message(client, userdata, message):
             func_table[RIGHT]  = (waveOneColor, (3., 0, 0, 0, 255))
             return
         if event['pattern']=='pluie': # Trois bleues qui clignotent alternativement
-            func_table[LEFT]   = (occultationOneColor, (3, 2, 0, BLUE))
-            func_table[CENTER] = (occultationOneColor, (3, 2, 2, BLUE))
-            func_table[RIGHT]  = (occultationOneColor, (3, 2, 1, BLUE))
+            freq = 0.5
+            func_table[LEFT]   = (occultationOneColor, (3*freq, 2*freq, 0, BLUE))
+            func_table[CENTER] = (occultationOneColor, (3*freq, 2*freq, 2*freq, BLUE))
+            func_table[RIGHT]  = (occultationOneColor, (3*freq, 2*freq, freq, BLUE))
             return
         if event['pattern']=='orage': # Une bleue et une jaune qui changent de position
             func_table[LEFT]   = (occultationTwoColor, (1, 0, 1, 1, 2, BLUE, YELLOW)) # NBJ
@@ -164,9 +166,10 @@ def on_message(client, userdata, message):
         # others
         if event['pattern']=='google': 
             freq = 0.7
-            func_table[LEFT]   = (occultationOneColor, (freq, 3*freq, 0 , BLUE ))
-            func_table[CENTER] = (occultationOneColor, (freq, 3*freq, -freq, RED))
-            func_table[RIGHT]  = (occultationOneColor, (freq, 3*freq, -2*freq, YELLOW))
+            func_table[LEFT]   = (occultationOneColor, (freq, 4*freq, 0 , BLUE ))
+            func_table[CENTER] = (occultationOneColor, (freq, 4*freq, -freq, RED))
+            func_table[RIGHT]  = (occultationOneColor, (freq, 4*freq, -2*freq, YELLOW))
+            func_table[NOSE]  = (occultationOneColor, (freq, 4*freq, -3*freq, GREEN))
             return
         return
     if event['command'] == 'set':
@@ -181,20 +184,20 @@ def on_message(client, userdata, message):
 # Main program logic follows:
 if __name__ == '__main__':
     led_pin = getConfig()['LED_PIN']
+    led_channel = getConfig()['LED_CHANNEL']
     print "Led manager starting on pin "+str(led_pin)
 
     # Create NeoPixel object with appropriate configuration.
-    strip = Adafruit_NeoPixel(LED_COUNT, led_pin, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+    strip = Adafruit_NeoPixel(LED_COUNT, led_pin, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, led_channel)
     strip.begin()
     clearStrip(strip)
     fd = 1 / 5
     func_table = {
-        0: (scheme, (time.time(), True , [3, 0, 0, 255, 1, 255, 0, 0,  2, 0, 255, 0, 5, 0, 0, 0])) ,
-        1: (waveOneColor, (3., 0, 128, 0, 255)),
+        0: (waveOneColor, (3., 0, 128, 0, 255)),
+        1: (waveOneColor, (3., 0, 0, 255, 0)),
         2: (fixedColor, BLACK),
-        3: (occultationOneColor, (5, 1, 0, RED1)),
-        4: (waveOneColor, (4., 0, 128, 0, 255)),
-        #5: (waveTwoColor, (4., 0, 255, 0, 0, 0, 0, 255, False)),
+        3: (fixedColor, BLACK),
+        4: (fixedColor, BLACK),
     }
 
     # init mqtt connection and subscribe
