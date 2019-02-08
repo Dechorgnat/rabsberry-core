@@ -6,7 +6,9 @@ import time
 import signal
 import sys
 import json
+import logging
 from core.tools.config import getConfig
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG, filename='/var/log/rabsberry/ear_manager.log')
 
 broker="127.0.0.1"
 
@@ -25,12 +27,12 @@ def signal_handler(sig, frame):
 def onmessage(client, userdata, message):
     try:
         message =str(message.payload.decode("utf-8"))
-        print "received message: "+ message
+        logging.info("received message: "+ message)
         event = json.loads(message)
         
         # goto command
         if event['command'] == 'goto':
-            print event['command']
+            logging.info(event['command'])
             if event['ear'] == 'left':
                 left_ear.goto(event['pos'], event['dir'])
             if event['ear'] == 'right':
@@ -41,7 +43,7 @@ def onmessage(client, userdata, message):
         return
         # step command
         if event['command'] == 'step':
-            print event['command']
+            logging.info(event['command'])
             if event['ear'] == 'left':
                 left_ear.step(event['pos'], event['dir'])
             if event['ear'] == 'right':
@@ -52,7 +54,7 @@ def onmessage(client, userdata, message):
         return
         # stop command
         if event['command'] == 'stop':
-            print event['command']
+            logging.info(event['command'])
             if event['ear'] == 'left':
                 left_ear.stop()
             if event['ear'] == 'right':
@@ -62,7 +64,7 @@ def onmessage(client, userdata, message):
                 left_ear.stop()
 
     except Exception as e:
-        print e
+        logging.info(e)
 
 if __name__ == "__main__":
     conf = getConfig()
@@ -97,7 +99,7 @@ if __name__ == "__main__":
     # waiting for calibration
     time.sleep(10)
     
-    print "Ready to receive message"
+    logging.info("Ready to receive message")
 
     while True:
         time.sleep(1)
