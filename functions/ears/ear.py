@@ -106,7 +106,7 @@ class Ear:
         GPIO.output(self.enable,GPIO.LOW)
         self.running = False
 
-    def goto(self, position, direction):
+    def goto(self, position, direction=FORWARD):
         print "going ", direction, " to position ",position
         self.goal = position
         self.start(direction)
