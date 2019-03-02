@@ -191,9 +191,8 @@ if __name__ == '__main__':
     strip = Adafruit_NeoPixel(LED_COUNT, led_pin, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, led_channel)
     strip.begin()
     clearStrip(strip)
-    fd = 1 / 5
     func_table = {
-        0: (waveOneColor, (3., 0, 128, 0, 255)),
+        0: (waveOneColor, (4., 0, 255, 0, 255)),
         1: (waveOneColor, (3., 0, 0, 255, 0)),
         2: (fixedColor, BLACK),
         3: (fixedColor, BLACK),
@@ -222,4 +221,4 @@ if __name__ == '__main__':
             else:
                 strip.setPixelColor(i, func(t, args))
             strip.show()
-        time.sleep(fd)
+        time.sleep(.05)
