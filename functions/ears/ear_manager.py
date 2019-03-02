@@ -13,6 +13,9 @@ logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=loggi
 broker="127.0.0.1"
 
 def signal_handler(sig, frame):
+    right_ear.goto(13)
+    left_ear.goto(13)
+
     # clean ears GPIO
     right_ear.cleanup()
     left_ear.cleanup()
@@ -97,8 +100,13 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
 
     # waiting for calibration
-    time.sleep(10)
+    while right_ear.calibration_state != 'success' and left_ear.calibration_state != 'success':
+        time.sleep(1)
     
+    time.sleep(3)
+    right_ear.goto(3);
+    left_ear.goto(3);
+
     logging.info("Ready to receive message")
 
     while True:
