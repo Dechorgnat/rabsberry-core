@@ -4,9 +4,9 @@
 # Nous commencons par inclure les librairies que nous avons installées.
 import urllib
 import requests
-from core.functions.play_tts import play_tts
-from core.functions.play_audio import play_audio_files
-from core.tools.config import getConfig
+from Rabsberry.core.functions.play_tts import play_tts
+from Rabsberry.core.functions.play_audio import play_audio_files
+from Rabsberry.core.tools.config import getConfig
 
 conf = getConfig()
 

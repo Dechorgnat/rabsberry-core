@@ -25,9 +25,6 @@ DAEMON_USER=root
 # The process ID of the script when it runs is stored here:
 PIDFILE=/var/run/$DAEMON_NAME.pid
 
-export PYTHON_PATH=$DIR
-export RABSBERRY_HOME=$DIR 
-
 . /lib/lsb/init-functions
 
 do_start () {

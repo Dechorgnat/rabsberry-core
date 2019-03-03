@@ -4,8 +4,8 @@ import datetime
 import random
 import os
 
-from core.tools.config import getConfig
-from core.functions.play_audio import play_audio_files
+from Rabsberry.core.tools.config import getConfig
+from Rabsberry.core.functions.play_audio import play_audio_files
 
 conf = getConfig()
 print(conf)

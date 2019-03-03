@@ -10,7 +10,7 @@ from rpi_ws281x import *
 from collections import Iterable
 import signal
 import sys
-from core.tools.config import getConfig
+from Rabsberry.core.tools.config import getConfig
 
 # Color Contants from https://www.webucator.com/blog/2015/03/python-color-constants-module/
 ALICEBLUE = Color(240, 248, 255)

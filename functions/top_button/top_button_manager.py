@@ -6,7 +6,7 @@ import requests
 import signal
 import sys
 import logging
-from core.tools.config import getConfig
+from Rabsberry.core.tools.config import getConfig
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG, filename='/var/log/rabsberry/top_button.log')
  
 

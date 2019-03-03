@@ -5,7 +5,7 @@
 import urllib
 import requests
 import json;
-from core.tools.config import getConfig
+from Rabsberry.core.tools.config import getConfig
 import paho.mqtt.client as paho
 
 #conf = getConfig()

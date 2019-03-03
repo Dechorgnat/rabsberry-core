@@ -2,8 +2,8 @@
 
 import datetime
 
-from core.tools.config import getConfig
-from core.functions.play_tts import play_tts
+from Rabsberry.core.tools.config import getConfig
+from Rabsberry.core.functions.play_tts import play_tts
 
 conf = getConfig()
 print(conf)

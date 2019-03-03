@@ -12,7 +12,7 @@ from rpi_ws281x import Color, Adafruit_NeoPixel
 from collections import Iterable
 import signal
 import sys
-from core.tools.config import getConfig
+from Rabsberry.core.tools.config import getConfig
 from colors import *
 
 # LED strip configuration:

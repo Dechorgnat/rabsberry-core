@@ -7,7 +7,7 @@ import signal
 import sys
 import json
 import logging
-from core.tools.config import getConfig
+from Rabsberry.core.tools.config import getConfig
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG, filename='/var/log/rabsberry/ear_manager.log')
 
 broker="127.0.0.1"

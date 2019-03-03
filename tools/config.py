@@ -1,7 +1,7 @@
 import os
 import json
 
-RABSBERRY_HOME = os.environ.get("RABSBERRY_HOME", None)
+RABSBERRY_HOME = os.environ.get("RABSBERRY_HOME", "/home/pi/Rabsberry")
 default_configfile = RABSBERRY_HOME+"/config.json"
 config = None
 
